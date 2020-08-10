@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"database/sql"
 )
 
-
-func StartServer() {
+func StartServer(db *sql.DB) {
 	mux := http.NewServeMux()
 	apiMux := http.NewServeMux()
 
 	// api router here
 	apiMux.HandleFunc("/", apiIndexHandelFunc)
+	apiMux.HandleFunc("/suggestion/add", apiSuggestionAddHandleFunc)
 
 	// router here
 	mux.HandleFunc("/", indexHandelFunc)
@@ -23,6 +24,12 @@ func StartServer() {
 		Handler: mux,
 	}
 	log.Fatal(s.ListenAndServe())
+}
+
+func apiSuggestionAddHandleFunc(w http.ResponseWriter, req *http.Request) {
+	if req.Method == "POST" {
+		
+	}
 }
 
 func apiIndexHandelFunc(w http.ResponseWriter, req *http.Request) {

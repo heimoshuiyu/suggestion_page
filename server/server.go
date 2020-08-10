@@ -23,7 +23,7 @@ func main() {
 		log.Fatal("Open database failed: ", err)
 	}
 	initDatabase(db)
-	StartServer()
+	StartServer(db)
 }
 
 func initDatabase(db *sql.DB) {
