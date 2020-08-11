@@ -11,22 +11,27 @@ import (
 var databasePath string
 var rebuildDatabase bool
 
+// DB as global var
+var DB *sql.DB
+
 func init() {
 	flag.StringVar(&databasePath, "database", "db.sqlite3", "Database file path")
 	flag.BoolVar(&rebuildDatabase, "rebuild", false, "Rebuild database")
 }
 
 func main() {
+	var err error
 	log.Println("Server start")
-	db, err := sql.Open("sqlite3", databasePath)
+	DB, err = sql.Open("sqlite3", databasePath)
 	if err != nil {
 		log.Fatal("Open database failed: ", err)
 	}
-	initDatabase(db)
-	StartServer(db)
+	initDatabase()
+	InitAllStmt()
+	StartServer()
 }
 
-func initDatabase(db *sql.DB) {
+func initDatabase() {
 	if rebuildDatabase {
 		os.Remove(databasePath)
 	}
@@ -37,7 +42,7 @@ func initDatabase(db *sql.DB) {
 	}
 	// init database
 	log.Println("Building database ...")
-	initStmt, err := db.Prepare(
+	initStmt, err := DB.Prepare(
 		`CREATE TABLE 'suggestion' (
 		'id' INTEGER,
 		'type' INTEGER,
